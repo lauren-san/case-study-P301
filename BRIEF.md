@@ -6,6 +6,8 @@ A comprehensive analytics dashboard for Content Strategy and Audience Insights M
 
 ## Data
 
+Generate a fake dataset as a JSON file (src/data/metrics.json). 12 months of data containing the below key metrics.
+
 ### Key Metrics
 
 **Content Performance:**
@@ -47,38 +49,78 @@ A comprehensive analytics dashboard for Content Strategy and Audience Insights M
 
 ### Dashboard Structure
 
-**Header Section:**
-- Dashboard title and date range selector
-- Quick filters (Platform, Date Range, Content Type)
-- Refresh button
+**Header Section (`v-app-bar`):**
+- `v-app-bar`: Main navigation bar with title
+- `v-text-field`: Date range picker/search
+- `v-select`: Platform filter dropdown
+- `v-btn`: Refresh and settings buttons
 
-**Key Metrics Row (KPI Cards):**
-- Total Views (card)
-- Subscribers (card)
-- Engagement Rate (card)
-- Ad Revenue (card)
-- Watch Time (card)
+**Key Metrics Row (`v-row` + `v-col` + `v-card`):**
+- `v-card` components for each KPI:
+  - Total Views Card
+  - Subscribers Card
+  - Engagement Rate Card
+  - Ad Revenue Card
+  - Watch Time Card
+- Each card contains `v-card-title`, `v-card-text`, and trend indicators
 
-**Charts Section (Grid Layout):**
-- **Views Trend** (Line Chart): Daily/weekly views over 30/90 days
-- **Subscriber Growth** (Area Chart): Subscriber count trends
-- **Revenue Trend** (Bar Chart): Ad revenue by week/month
-- **Engagement Distribution** (Pie Chart): Likes vs Comments vs Shares
-- **Content Performance by Type** (Horizontal Bar): Views/engagement by content type
-- **Platform Performance** (Grouped Bar): Comparison across platforms
-- **Watch Time vs Content** (Scatter): Correlation between video length and watch time
-- **Top 10 Content** (Table): Best performing content with key metrics
+**Charts Section (`v-container` + `v-row` + `v-col`):**
+- `v-row` with responsive breakpoints (md=6, lg=4 as needed)
+- `v-col` wrappers for each chart
+- `v-card` containers with `v-card-title` headers:
+  - Views Trend (Chart.js Line Chart)
+  - Subscriber Growth (Chart.js Area Chart)
+  - Revenue Trend (Chart.js Bar Chart)
+  - Engagement Distribution (Chart.js Pie Chart)
+  - Content Performance by Type (Chart.js Horizontal Bar)
+  - Platform Performance (Chart.js Grouped Bar)
+  - Watch Time vs Content (Chart.js Scatter)
+  - Top 10 Content (`v-data-table`)
 
 **Detailed Analytics Section:**
-- Audience Demographics (pie/donut charts)
-- Top Performing Hours/Days (heatmap)
-- Churn Analysis (line chart)
-- Traffic Sources Breakdown
+- `v-expansion-panels` for collapsible sections:
+  - Audience Demographics
+  - Top Performing Hours/Days (heatmap)
+  - Churn Analysis
+  - Traffic Sources Breakdown
+- Each panel contains relevant charts
 
-**Sidebar Navigation:**
-- Navigation to different dashboard views
-- Filter options
-- Export data button
+**Sidebar Navigation (`v-navigation-drawer`):**
+- `v-navigation-drawer` (permanent or temporary based on screen size)
+- `v-list` with navigation items
+- `v-list-item` for each dashboard view
+- `v-divider` for section separation
+- `v-btn` for export functionality
+
+**Bottom Layout:**
+- `v-footer` with pagination or additional info
+- `v-main` wrapper for main content area
+
+### Component Breakdown
+
+- `v-app`: Root wrapper for the entire app
+- `v-app-bar`: Top navigation bar
+- `v-container`: Main content container with padding
+- `v-row`: Horizontal layout grid
+- `v-col`: Vertical grid columns (responsive with breakpoints)
+- `v-card`: Data container cards with shadows
+- `v-card-title`: Card headers
+- `v-card-text`: Card body content
+- `v-data-table`: Table for top content with sorting/filtering
+- `v-select`: Dropdown filters
+- `v-text-field`: Date picker and search inputs
+- `v-btn`: Action buttons with icons
+- `v-icon`: Icons from Material Design Icons
+- `v-chip`: Tags and badges for data labels
+- `v-progress-linear`: Progress indicators for percentages
+- `v-navigation-drawer`: Side menu for filters
+- `v-menu`: Dropdown menus for quick actions
+- `v-tooltip`: Hover tooltips on data points
+- `v-expansion-panels`: Collapsible detailed sections
+- `v-divider`: Visual separators
+- `v-footer`: Bottom footer section
+- `v-main`: Main content wrapper
+- `v-spacer`: Flexible spacing element
 
 ## Interaction
 
