@@ -1,12 +1,12 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid class="pa-6" style="display: flex; flex-direction: column; height: 100%;">
     <!-- Header Section -->
-    <v-row class="mb-6">
+    <v-row class="mb-4">
       <v-col cols="12">
         <div class="d-flex align-center justify-space-between">
           <div>
-            <h1 class="text-h4 font-weight-bold">Content Analytics Dashboard</h1>
-            <p class="text-subtitle2 text-grey mt-1">Monitor your content performance across all platforms</p>
+            <h1 class="text-h6 font-weight-bold">Content Analytics Dashboard</h1>
+            <p class="text-caption text-grey mt-1">Monitor your content performance across all platforms</p>
           </div>
           <div class="d-flex gap-2">
             <v-btn @click="refreshData" icon size="small">
@@ -78,9 +78,9 @@
     </v-row>
 
     <!-- KPI Cards Row -->
-    <v-row class="mb-6">
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card elevation="2">
+    <v-row class="mb-6" style="flex-wrap: nowrap;">
+      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
@@ -94,8 +94,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card elevation="2">
+      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
@@ -109,8 +109,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card elevation="2">
+      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
@@ -124,8 +124,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card elevation="2">
+      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
@@ -139,8 +139,8 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4">
-        <v-card elevation="2">
+      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
@@ -158,7 +158,7 @@
     <!-- Charts Row 1 -->
     <v-row class="mb-6">
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Views Trend (Monthly)</v-card-title>
           <v-card-text>
             <canvas id="viewsChart" height="80"></canvas>
@@ -167,7 +167,7 @@
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Subscriber Growth</v-card-title>
           <v-card-text>
             <canvas id="subscriberChart" height="80"></canvas>
@@ -179,7 +179,7 @@
     <!-- Charts Row 2 -->
     <v-row class="mb-6">
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Revenue Trend</v-card-title>
           <v-card-text>
             <canvas id="revenueChart" height="80"></canvas>
@@ -188,7 +188,7 @@
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Engagement Breakdown</v-card-title>
           <v-card-text>
             <canvas id="engagementChart" height="80"></canvas>
@@ -200,7 +200,7 @@
     <!-- Charts Row 3 -->
     <v-row class="mb-6">
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Content Performance by Type</v-card-title>
           <v-card-text>
             <canvas id="contentTypeChart" height="80"></canvas>
@@ -209,7 +209,7 @@
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Platform Performance</v-card-title>
           <v-card-text>
             <canvas id="platformChart" height="80"></canvas>
@@ -221,7 +221,7 @@
     <!-- Top Content Table -->
     <v-row class="mb-6">
       <v-col cols="12">
-        <v-card elevation="2">
+        <v-card elevation="1">
           <v-card-title>Top 10 Performing Content</v-card-title>
           <v-data-table
             :headers="topContentHeaders"
