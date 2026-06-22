@@ -4,9 +4,8 @@
     <v-row class="mb-4">
       <v-col cols="12">
         <div class="d-flex align-center justify-space-between">
-          <div>
-            <h1 class="text-h6 font-weight-bold">TikTok Analytics</h1>
-            <p class="text-caption text-grey mt-1">Real-time performance & insights for your TikTok channel</p>
+          <div class="text-left">
+            <h1 class="font-weight-bold" style="font-size: 1.55rem; line-height: 1.2; color: var(--text-h); margin: 0; font-weight: 700; letter-spacing: 0.03em;">TikTok Analytics</h1>
           </div>
           <div class="d-flex gap-2">
             <v-btn @click="refreshData" icon size="small">
@@ -21,7 +20,7 @@
     </v-row>
 
     <!-- Filter Section -->
-    <v-row class="mb-6">
+    <v-row class="mb-0 filter-row">
       <v-col cols="12" sm="6" md="2">
         <v-select 
           v-model="selectedYear" 
@@ -44,163 +43,162 @@
           @update:modelValue="applyFilters"
         ></v-select>
       </v-col>
-
-      <v-col cols="12" sm="6" md="2">
-        <v-select 
-          v-model="selectedContentType" 
-          :items="contentTypeOptions" 
-          item-title="title"
-          item-value="value"
-          label="Content Type" 
-          variant="outlined" 
-          density="compact"
-          @update:modelValue="applyFilters"
-        ></v-select>
-      </v-col>
-      <v-col cols="12" sm="6" md="2">
-        <v-btn @click="refreshData" block color="primary" variant="tonal">Refresh</v-btn>
-      </v-col>
-      <v-col cols="12" sm="6" md="2">
-        <v-btn @click="resetFilters" block color="secondary" variant="tonal">Reset</v-btn>
-      </v-col>
     </v-row>
 
-    <!-- KPI Cards Row -->
-    <v-row class="mb-6" style="flex-wrap: nowrap;">
-      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1" class="gradient-card gradient-purple" style="border-radius: 12px; color: white;">
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-subtitle2" style="opacity: 0.9;">Total Views</p>
-                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.totalViews) }}</p>
+    <!-- KPI Cards Row 1: Followers, Engagement Rate, Ad Revenue -->
+    <v-row class="mb-4" align="stretch">
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-teal">
+                <v-icon size="22" color="white">mdi-account-multiple</v-icon>
               </div>
-              <v-icon size="32" color="white">mdi-eye</v-icon>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Followers</span>
+                <p class="text-h6 kpi-value">{{ formatNumber(metrics.totalFollowers) }}</p>
+              </div>
             </div>
-            <v-progress-linear :value="85" color="rgba(255,255,255,0.3)" class="mt-2" height="4"></v-progress-linear>
+            <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
+              <v-chip size="small" color="rgba(23,215,166,0.15)" style="color: #17D7A6;">+2.3% MoM</v-chip>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1" class="gradient-card gradient-teal" style="border-radius: 12px; color: white;">
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-subtitle2" style="opacity: 0.9;">Followers</p>
-                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.totalFollowers) }}</p>
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-orange">
+                <v-icon size="22" color="white">mdi-heart</v-icon>
               </div>
-              <v-icon size="32" color="white">mdi-account-multiple</v-icon>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Engagement Rate</span>
+                <p class="text-h6 kpi-value">{{ metrics.totalEngagementRate.toFixed(2) }}%</p>
+              </div>
             </div>
-            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+2.3% MoM</v-chip>
+            <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
+              <v-chip size="small" color="rgba(255,165,0,0.15)" style="color: #FFA500;">+0.45% MoM</v-chip>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1" class="gradient-card gradient-orange" style="border-radius: 12px; color: white;">
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-subtitle2" style="opacity: 0.9;">Engagement Rate</p>
-                <p class="text-h5 font-weight-bold">{{ metrics.totalEngagementRate.toFixed(2) }}%</p>
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-coral">
+                <v-icon size="22" color="white">mdi-chart-line</v-icon>
               </div>
-              <v-icon size="32" color="white">mdi-heart</v-icon>
-            </div>
-            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+0.45% MoM</v-chip>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1" class="gradient-card gradient-coral" style="border-radius: 12px; color: white;">
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-subtitle2" style="opacity: 0.9;">Ad Revenue</p>
-                <p class="text-h5 font-weight-bold">${{ formatNumber(metrics.totalAdRevenue) }}</p>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Ad Revenue</span>
+                <p class="text-h6 kpi-value">${{ formatNumber(metrics.totalAdRevenue) }}</p>
               </div>
-              <v-icon size="32" color="white">mdi-chart-line</v-icon>
             </div>
-            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+12.5% YoY</v-chip>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1" class="gradient-card gradient-cyan" style="border-radius: 12px; color: white;">
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <div>
-                <p class="text-subtitle2" style="opacity: 0.9;">Watch Time</p>
-                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.avgWatchTimeHours) }}h</p>
-              </div>
-              <v-icon size="32" color="white">mdi-clock</v-icon>
+            <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
+              <v-chip size="small" color="rgba(255,107,84,0.15)" style="color: #FF6B54;">+12.5% YoY</v-chip>
             </div>
-            <v-progress-linear :value="72" color="rgba(255,255,255,0.3)" class="mt-2" height="4"></v-progress-linear>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    <!-- Charts Row 1 -->
-    <v-row class="mb-6">
-      <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Views Trend (Monthly)</v-card-title>
-          <v-card-text>
-            <canvas id="viewsChart" height="80"></canvas>
+    <!-- KPI Cards Row 2: Total Views, Watch Time, Likes -->
+    <v-row class="mb-6" align="stretch">
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-purple">
+                <v-icon size="22" color="white">mdi-eye</v-icon>
+              </div>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Total Views</span>
+                <p class="text-h6 kpi-value">{{ formatNumber(metrics.totalViews) }}</p>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Subscriber Growth</v-card-title>
-          <v-card-text>
-            <canvas id="subscriberChart" height="80"></canvas>
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-cyan">
+                <v-icon size="22" color="white">mdi-clock</v-icon>
+              </div>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Total Watch Time</span>
+                <p class="text-h6 kpi-value">{{ formatNumber(metrics.avgWatchTimeHours) }}h</p>
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+        <v-card elevation="1" class="kpi-card">
+          <v-card-text class="kpi-card-text">
+            <div class="kpi-header-row">
+              <div class="icon-circle icon-likes">
+                <v-icon size="22" color="white">mdi-thumb-up</v-icon>
+              </div>
+              <div class="kpi-copy">
+                <span class="text-caption font-weight-bold">Total Likes</span>
+                <p class="text-h6 kpi-value">{{ formatNumber(totalLikes) }}</p>
+              </div>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-
     <!-- Charts Row 2 -->
-    <v-row class="mb-6">
+    <v-row class="mb-6" align="stretch">
       <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Revenue Trend</v-card-title>
-          <v-card-text>
-            <canvas id="revenueChart" height="80"></canvas>
+        <v-card elevation="1" class="chart-card">
+          <v-card-title class="chart-card-title">Revenue Trend</v-card-title>
+          <v-card-text class="chart-card-text">
+            <div class="chart-panel chart-panel-line">
+              <canvas id="revenueChart" height="120"></canvas>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
-
       <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Engagement Breakdown</v-card-title>
-          <v-card-text>
-            <canvas id="engagementChart" height="80"></canvas>
+        <v-card elevation="1" class="chart-card">
+          <v-card-title class="chart-card-title">Subscriber Churn</v-card-title>
+          <v-card-text class="chart-card-text">
+            <div class="chart-panel chart-panel-line">
+              <canvas id="subscriberChurnChart" height="120"></canvas>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
     <!-- Charts Row 3 -->
-    <v-row class="mb-6">
+    <v-row class="mb-6" align="stretch">
       <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Content Performance by Type</v-card-title>
-          <v-card-text>
-            <canvas id="contentTypeChart" height="80"></canvas>
+        <v-card elevation="1" style="height: 280px;">
+          <v-card-title class="chart-card-title">Engagement Breakdown</v-card-title>
+          <v-card-text class="donut-card-text">
+            <div class="chart-panel chart-panel-donut">
+              <canvas id="engagementChart" height="100"></canvas>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card elevation="1">
-          <v-card-title>Platform Performance</v-card-title>
-          <v-card-text>
-            <canvas id="platformChart" height="80"></canvas>
+        <v-card elevation="1" class="content-type-card">
+          <v-card-title class="chart-card-title">Content Performance by Type</v-card-title>
+          <v-card-text class="content-type-card-text">
+            <div class="chart-panel chart-panel-bar">
+              <canvas id="contentTypeChart"></canvas>
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -210,20 +208,35 @@
     <v-row class="mb-6">
       <v-col cols="12">
         <v-card elevation="1">
-          <v-card-title>Top 10 Performing Content</v-card-title>
+          <v-card-title class="chart-card-title">Top 10 Performing Content</v-card-title>
           <v-data-table
             :headers="topContentHeaders"
             :items="topContent"
-            :items-per-page="10"
-            class="elevation-0"
+            :items-per-page="-1"
+            hide-default-footer
+            class="elevation-0 top-content-table"
           >
+            <template v-slot:item.title="{ item }">
+              <div class="cell-start">{{ item.title }}</div>
+            </template>
+            <template v-slot:item.platform="{ item }">
+              <div class="cell-start">{{ item.platform }}</div>
+            </template>
             <template v-slot:item.views="{ item }">
-              {{ formatNumber(item.views) }}
+              <div class="cell-end">{{ formatNumber(item.views) }}</div>
             </template>
             <template v-slot:item.engagementRate="{ item }">
-              <v-chip :color="item.engagementRate > 4 ? 'success' : 'warning'" text-color="white" size="small">
-                {{ item.engagementRate.toFixed(1) }}%
-              </v-chip>
+              <div class="cell-end">
+                <v-chip :color="item.engagementRate > 4 ? 'success' : 'warning'" text-color="white" size="small">
+                  {{ item.engagementRate.toFixed(1) }}%
+                </v-chip>
+              </div>
+            </template>
+            <template v-slot:item.date="{ item }">
+              <div class="cell-start">{{ item.date }}</div>
+            </template>
+            <template v-slot:item.likes="{ item }">
+              <div class="cell-end">{{ formatNumber(item.likes) }}</div>
             </template>
           </v-data-table>
         </v-card>
@@ -234,7 +247,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, DoughnutController, Filler } from 'chart.js'
 import metricsData from '../data/metrics.json'
 
@@ -253,28 +266,23 @@ const dateRangeOptions = [
   { title: 'All Time', value: 'all' }
 ]
 
-const contentTypeOptions = [
-  { title: 'All Types', value: 'all' },
-  { title: 'Educational Tutorials', value: 'Educational Tutorials' },
-  { title: 'Behind-the-Scenes', value: 'Behind-the-Scenes' },
-  { title: 'Quick Tips', value: 'Quick Tips' },
-  { title: 'Trending Content', value: 'Trending Content' },
-  { title: 'Live Streams', value: 'Live Streams' }
-]
-
 const topContentHeaders = [
-  { title: 'Title', key: 'title', width: '30%' },
-  { title: 'Platform', key: 'platform', width: '15%' },
-  { title: 'Views', key: 'views', width: '15%' },
-  { title: 'Engagement', key: 'engagementRate', width: '15%' },
-  { title: 'Date', key: 'date', width: '15%' },
-  { title: 'Likes', key: 'likes', width: '10%' }
+  { title: 'Title', key: 'title', width: '30%', align: 'start' as const },
+  { title: 'Platform', key: 'platform', width: '15%', align: 'start' as const },
+  { title: 'Views', key: 'views', width: '15%', align: 'end' as const },
+  { title: 'Engagement', key: 'engagementRate', width: '15%', align: 'end' as const },
+  { title: 'Date', key: 'date', width: '15%', align: 'start' as const },
+  { title: 'Likes', key: 'likes', width: '10%', align: 'end' as const }
 ]
 
 const metrics = ref(metricsData.overview)
+const totalLikes = metricsData.monthlyData.reduce((sum: number, m: any) => sum + (m.likes || 0), 0)
 const monthlyData = ref(metricsData.monthlyData.filter(m => m.year === selectedYear.value))
-const topContent = ref(metricsData.topContent.filter(c => c.platform === 'TikTok'))
-const platformPerformance = metricsData.platformPerformance
+const topContent = ref(
+  metricsData.topContent
+    .sort((left, right) => right.views - left.views)
+    .slice(0, 10)
+)
 const contentTypePerformance = metricsData.contentTypePerformance
 
 const formatNumber = (num: number): string => {
@@ -290,26 +298,20 @@ const formatNumber = (num: number): string => {
 const applyFilters = () => {
   monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
   
-  // Filter for TikTok content only
-  let filteredContent = metricsData.topContent.filter(c => c.platform === 'TikTok')
+  let filteredContent = [...metricsData.topContent]
   
   if (selectedContentType.value !== 'all') {
     filteredContent = filteredContent.filter(c => c.type === selectedContentType.value)
   }
   
   topContent.value = filteredContent
+    .sort((left, right) => right.views - left.views)
+    .slice(0, 10)
   
   // Redraw charts
   setTimeout(() => {
     drawCharts()
   }, 100)
-}
-
-const resetFilters = () => {
-  selectedYear.value = 2026
-  selectedDateRange.value = 'all'
-  selectedContentType.value = 'all'
-  applyFilters()
 }
 
 const refreshData = () => {
@@ -323,12 +325,24 @@ const exportData = () => {
 
 let charts: any = {}
 
+const getChartPalette = () => {
+  const themeRoot = (document.querySelector('.v-application') as HTMLElement | null) || document.documentElement
+  const rootStyles = getComputedStyle(themeRoot)
+
+  return {
+    text: rootStyles.getPropertyValue('--dashboard-chart-text').trim() || '#3f4756',
+    grid: rootStyles.getPropertyValue('--dashboard-grid').trim() || 'rgba(15, 23, 42, 0.12)',
+    legend: rootStyles.getPropertyValue('--dashboard-chart-text').trim() || '#3f4756'
+  }
+}
+
 const drawCharts = () => {
   // Destroy existing charts
   Object.values(charts).forEach((chart: any) => {
     if (chart) chart.destroy()
   })
   charts = {}
+  const palette = getChartPalette()
 
   const monthLabels = monthlyData.value.map(m => m.month)
   
@@ -353,7 +367,17 @@ const drawCharts = () => {
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
+        plugins: { legend: { display: true, labels: { color: palette.legend } } },
+        scales: {
+          x: {
+            ticks: { color: palette.text },
+            grid: { color: palette.grid }
+          },
+          y: {
+            ticks: { color: palette.text },
+            grid: { color: palette.grid }
+          }
+        }
       }
     })
   }
@@ -379,7 +403,17 @@ const drawCharts = () => {
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
+        plugins: { legend: { display: true, labels: { color: palette.legend } } },
+        scales: {
+          x: {
+            ticks: { color: palette.text },
+            grid: { color: palette.grid }
+          },
+          y: {
+            ticks: { color: palette.text },
+            grid: { color: palette.grid }
+          }
+        }
       }
     })
   }
@@ -395,14 +429,90 @@ const drawCharts = () => {
           {
             label: 'Ad Revenue',
             data: monthlyData.value.map(m => m.adRevenue),
-            backgroundColor: '#FF9800'
+            backgroundColor: '#FF9800',
+            borderRadius: 8,
+            borderSkipped: false,
+            barThickness: 18,
+            maxBarThickness: 22
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` $${Number(context.parsed.y).toLocaleString()}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { maxRotation: 0, color: palette.text }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: palette.grid },
+            ticks: {
+              color: palette.text,
+              callback: (value) => `$${Number(value).toLocaleString()}`
+            }
+          }
+        }
+      }
+    })
+  }
+
+  // Subscriber Churn Chart
+  const churnCtx = document.getElementById('subscriberChurnChart') as HTMLCanvasElement
+  if (churnCtx) {
+    charts['subscriberChurnChart'] = new ChartJS(churnCtx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [
+          {
+            label: 'Churn Rate',
+            data: monthlyData.value.map(m => m.churnRate),
+            borderColor: '#EF5350',
+            backgroundColor: 'rgba(239, 83, 80, 0.14)',
+            pointBackgroundColor: '#EF5350',
+            pointRadius: 3,
+            pointHoverRadius: 4,
+            borderWidth: 2,
+            tension: 0.35,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` ${Number(context.parsed.y).toFixed(2)}%`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { maxRotation: 0, color: palette.text }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: palette.grid },
+            ticks: {
+              color: palette.text,
+              callback: (value) => `${Number(value).toFixed(2)}%`
+            }
+          }
+        }
       }
     })
   }
@@ -425,7 +535,29 @@ const drawCharts = () => {
       options: {
         responsive: true,
         maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
+        cutout: '58%',
+        layout: {
+          padding: {
+            top: 4,
+            bottom: 36
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+              font: {
+                size: 10
+              },
+              color: palette.legend,
+              boxWidth: 12,
+              boxHeight: 12,
+              usePointStyle: true,
+              padding: 12
+            }
+          }
+        }
       }
     })
   }
@@ -433,14 +565,18 @@ const drawCharts = () => {
   // Content Type Chart
   const contentTypeCtx = document.getElementById('contentTypeChart') as HTMLCanvasElement
   if (contentTypeCtx) {
+    const topContentTypes = [...contentTypePerformance]
+      .sort((left, right) => right.views - left.views)
+      .slice(0, 3)
+
     charts['contentTypeChart'] = new ChartJS(contentTypeCtx, {
       type: 'bar',
       data: {
-        labels: contentTypePerformance.map(ct => ct.type),
+        labels: topContentTypes.map(ct => ct.type),
         datasets: [
           {
             label: 'Views',
-            data: contentTypePerformance.map(ct => ct.views / 1000000),
+            data: topContentTypes.map(ct => ct.views / 1000000),
             backgroundColor: '#00D4FF'
           }
         ]
@@ -448,44 +584,49 @@ const drawCharts = () => {
       options: {
         indexAxis: 'y',
         responsive: true,
-        maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => ` ${Number(context.parsed.x).toFixed(1)}M views`
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { color: palette.grid },
+            ticks: {
+              color: palette.text,
+              callback: (value) => `${value}M`
+            }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { color: palette.text }
+          }
+        }
       }
     })
   }
 
-  // Platform Chart
-  const platformCtx = document.getElementById('platformChart') as HTMLCanvasElement
-  if (platformCtx) {
-    charts['platformChart'] = new ChartJS(platformCtx, {
-      type: 'bar',
-      data: {
-        labels: Object.keys(platformPerformance),
-        datasets: [
-          {
-            label: 'Followers',
-            data: Object.values(platformPerformance).map(p => p.followers),
-            backgroundColor: '#6B5BFF'
-          },
-          {
-            label: 'Engagement %',
-            data: Object.values(platformPerformance).map(p => p.engagement),
-            backgroundColor: '#17D7A6'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: { legend: { display: true } }
-      }
-    })
-  }
+}
+
+const handleThemeChange = () => {
+  setTimeout(() => {
+    drawCharts()
+  }, 0)
 }
 
 onMounted(() => {
   monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
   drawCharts()
+  window.addEventListener('app-theme-change', handleThemeChange)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('app-theme-change', handleThemeChange)
 })
 </script>
 
@@ -493,4 +634,148 @@ onMounted(() => {
 .gap-2 {
   gap: 8px;
 }
+
+.kpi-card {
+  border-radius: 12px;
+  background: var(--dashboard-card-bg);
+  height: 100%;
+}
+
+.kpi-card-text {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.kpi-header-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.kpi-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.kpi-value {
+  font-weight: 600;
+  margin: 0;
+}
+
+.chart-card-title {
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  line-height: 1.25;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.chart-card {
+  height: 100%;
+}
+
+.chart-card-text {
+  width: 100%;
+}
+
+.chart-panel {
+  position: relative;
+  width: 100%;
+}
+
+.chart-panel-line {
+  width: 100%;
+}
+
+.chart-panel-line canvas,
+.chart-panel-bar canvas {
+  width: 100% !important;
+}
+
+.chart-panel-donut {
+  max-width: 250px;
+  margin: 0 auto;
+}
+
+.donut-card-text {
+  padding-top: 0;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.chart-panel-bar {
+  height: 100%;
+}
+
+.chart-panel-bar canvas {
+  height: 100% !important;
+}
+
+.content-type-card {
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-type-card-text {
+  flex: 1;
+  min-height: 0;
+}
+
+:deep(.filter-row .v-col) {
+  padding-bottom: 6px;
+}
+
+:deep(.top-content-table th),
+:deep(.top-content-table td) {
+  vertical-align: middle;
+}
+
+:deep(.top-content-table th:nth-child(1)),
+:deep(.top-content-table th:nth-child(2)),
+:deep(.top-content-table th:nth-child(5)),
+:deep(.top-content-table td:nth-child(1)),
+:deep(.top-content-table td:nth-child(2)),
+:deep(.top-content-table td:nth-child(5)) {
+  text-align: left;
+}
+
+:deep(.top-content-table th:nth-child(3)),
+:deep(.top-content-table th:nth-child(4)),
+:deep(.top-content-table th:nth-child(6)),
+:deep(.top-content-table td:nth-child(3)),
+:deep(.top-content-table td:nth-child(4)),
+:deep(.top-content-table td:nth-child(6)) {
+  text-align: right;
+}
+
+.cell-start {
+  text-align: left;
+}
+
+.cell-end {
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.icon-purple { background: #6B5BFF; }
+.icon-teal   { background: #17D7A6; }
+.icon-orange { background: #FFA500; }
+.icon-coral  { background: #FF6B54; }
+.icon-cyan   { background: #00D4FF; }
+.icon-likes  { background: #FF4757; }
 </style>

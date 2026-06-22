@@ -29,12 +29,27 @@ const vuetify = createVuetify({
     themes: {
       light: {
         colors: {
+          background: '#f6f7fb',
+          surface: '#ffffff',
           primary: '#6B5BFF',
           secondary: '#FF6B54',
           success: '#17D7A6',
           warning: '#FFA500',
           error: '#FF4757',
           info: '#00D4FF'
+        }
+      },
+      dark: {
+        dark: true,
+        colors: {
+          background: '#11141c',
+          surface: '#1a1f2b',
+          primary: '#8c83ff',
+          secondary: '#ff866e',
+          success: '#2fd9b5',
+          warning: '#ffb24c',
+          error: '#ff6b7a',
+          info: '#53d6ff'
         }
       }
     }

@@ -9,13 +9,16 @@
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --dashboard-card-bg: #ffffff;
+  --dashboard-grid: rgba(15, 23, 42, 0.12);
+  --dashboard-chart-text: #3f4756;
+  --sans: 'Segoe UI', system-ui, Roboto, sans-serif;
+  --heading: 'Segoe UI', system-ui, Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -35,28 +38,31 @@ html, body, #app {
   padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+.v-theme--dark {
+  --text: #c9d0da;
+  --text-h: #f1f5f9;
+  --bg: #11141c;
+  --border: #31384a;
+  --code-bg: #1d2432;
+  --accent: #b6adff;
+  --accent-bg: rgba(182, 173, 255, 0.18);
+  --accent-border: rgba(182, 173, 255, 0.55);
+  --social-bg: rgba(40, 47, 63, 0.65);
+  --shadow:
+    rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.3) 0 4px 6px -2px;
+  --dashboard-card-bg: #1a1f2b;
+  --dashboard-grid: rgba(226, 232, 240, 0.38);
+  --dashboard-chart-text: #f1f5f9;
 }
 
 body {
   margin: 0;
+}
+
+.v-application,
+.v-application__wrap,
+.v-main {
+  background: var(--bg);
 }
 
 h1,
@@ -162,11 +168,9 @@ code {
 }
 
 #app {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
