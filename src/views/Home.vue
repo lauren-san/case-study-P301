@@ -45,9 +45,9 @@
       </v-col>
     </v-row>
 
-    <!-- KPI Cards Row 1: Followers, Engagement Rate, Ad Revenue -->
-    <v-row class="mb-4" align="stretch">
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+    <!-- KPI Cards: 2-up on mobile, 3-up on desktop -->
+    <v-row class="mb-6" align="stretch">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
@@ -66,7 +66,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
@@ -85,7 +85,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
@@ -103,11 +103,8 @@
           </v-card-text>
         </v-card>
       </v-col>
-    </v-row>
 
-    <!-- KPI Cards Row 2: Total Views, Watch Time, Likes -->
-    <v-row class="mb-6" align="stretch">
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
@@ -123,7 +120,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
@@ -139,7 +136,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="4" style="flex: 1; min-width: 0;">
+      <v-col cols="12" sm="6" md="4">
         <v-card elevation="1" class="kpi-card">
           <v-card-text class="kpi-card-text">
             <div class="kpi-header-row">
