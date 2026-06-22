@@ -22,17 +22,58 @@
 
     <!-- Filter Section -->
     <v-row class="mb-6">
-      <v-col cols="12" sm="6" md="3">
-        <v-select v-model="selectedDateRange" :items="dateRangeOptions" label="Date Range" variant="outlined" density="compact"></v-select>
+      <v-col cols="12" sm="6" md="2">
+        <v-select 
+          v-model="selectedYear" 
+          :items="yearOptions" 
+          label="Year" 
+          variant="outlined" 
+          density="compact"
+          @update:modelValue="applyFilters"
+        ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <v-select v-model="selectedPlatforms" :items="platformOptions" label="Platforms" variant="outlined" multiple density="compact"></v-select>
+      <v-col cols="12" sm="6" md="2">
+        <v-select 
+          v-model="selectedDateRange" 
+          :items="dateRangeOptions" 
+          item-title="title"
+          item-value="value"
+          label="Date Range" 
+          variant="outlined" 
+          density="compact"
+          @update:modelValue="applyFilters"
+        ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <v-select v-model="selectedContentType" :items="contentTypeOptions" label="Content Type" variant="outlined" density="compact"></v-select>
+      <v-col cols="12" sm="6" md="2">
+        <v-select 
+          v-model="selectedPlatforms" 
+          :items="platformOptions" 
+          item-title="title"
+          item-value="value"
+          label="Platforms" 
+          variant="outlined" 
+          multiple 
+          density="compact"
+          @update:modelValue="applyFilters"
+        ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="3">
-        <v-btn @click="applyFilters" block color="primary" variant="tonal">Apply Filters</v-btn>
+      <v-col cols="12" sm="6" md="2">
+        <v-select 
+          v-model="selectedContentType" 
+          :items="contentTypeOptions" 
+          item-title="title"
+          item-value="value"
+          label="Content Type" 
+          variant="outlined" 
+          density="compact"
+          @update:modelValue="applyFilters"
+        ></v-select>
+      </v-col>
+      <v-col cols="12" sm="6" md="2">
+        <v-btn @click="refreshData" block color="primary" variant="tonal">Refresh</v-btn>
+      </v-col>
+      <v-col cols="12" sm="6" md="2">
+        <v-btn @click="resetFilters" block color="secondary" variant="tonal">Reset</v-btn>
       </v-col>
     </v-row>
 
@@ -44,7 +85,7 @@
             <div class="d-flex align-center justify-space-between">
               <div>
                 <p class="text-subtitle2 text-grey">Total Views</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.overview.totalViews) }}</p>
+                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.totalViews) }}</p>
               </div>
               <v-icon size="32" color="primary">mdi-eye</v-icon>
             </div>
@@ -59,7 +100,7 @@
             <div class="d-flex align-center justify-space-between">
               <div>
                 <p class="text-subtitle2 text-grey">Followers</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.overview.totalFollowers) }}</p>
+                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.totalFollowers) }}</p>
               </div>
               <v-icon size="32" color="primary">mdi-account-multiple</v-icon>
             </div>
@@ -74,7 +115,7 @@
             <div class="d-flex align-center justify-space-between">
               <div>
                 <p class="text-subtitle2 text-grey">Engagement Rate</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ metrics.overview.totalEngagementRate.toFixed(2) }}%</p>
+                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ metrics.totalEngagementRate.toFixed(2) }}%</p>
               </div>
               <v-icon size="32" color="primary">mdi-heart</v-icon>
             </div>
@@ -89,7 +130,7 @@
             <div class="d-flex align-center justify-space-between">
               <div>
                 <p class="text-subtitle2 text-grey">Ad Revenue</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">${{ formatNumber(metrics.overview.totalAdRevenue) }}</p>
+                <p class="text-h5 font-weight-bold" style="color: #3f51b5">${{ formatNumber(metrics.totalAdRevenue) }}</p>
               </div>
               <v-icon size="32" color="success">mdi-chart-line</v-icon>
             </div>
@@ -104,7 +145,7 @@
             <div class="d-flex align-center justify-space-between">
               <div>
                 <p class="text-subtitle2 text-grey">Watch Time</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.overview.avgWatchTimeHours) }}h</p>
+                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.avgWatchTimeHours) }}h</p>
               </div>
               <v-icon size="32" color="info">mdi-clock</v-icon>
             </div>
@@ -184,7 +225,7 @@
           <v-card-title>Top 10 Performing Content</v-card-title>
           <v-data-table
             :headers="topContentHeaders"
-            :items="metrics.topContent"
+            :items="topContent"
             :items-per-page="10"
             class="elevation-0"
           >
@@ -201,108 +242,22 @@
       </v-col>
     </v-row>
 
-    <!-- Detailed Analytics Section -->
-    <v-row class="mb-6">
-      <v-col cols="12">
-        <v-expansion-panels>
-          <!-- Demographics Panel -->
-          <v-expansion-panel>
-            <v-expansion-panel-title>Audience Demographics</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-row>
-                <v-col cols="12" md="6">
-                  <p class="font-weight-bold mb-4">Age Distribution</p>
-                  <canvas id="ageChart" height="100"></canvas>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <p class="font-weight-bold mb-4">Gender Distribution</p>
-                  <canvas id="genderChart" height="100"></canvas>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- Publishing Times Panel -->
-          <v-expansion-panel>
-            <v-expansion-panel-title>Top Performing Hours & Days</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-table>
-                <thead>
-                  <tr>
-                    <th>Day</th>
-                    <th>Time</th>
-                    <th>Avg Views</th>
-                    <th>Engagement Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="time in metrics.bestPublishingTimes.slice(0, 5)" :key="time.day + time.time">
-                    <td>{{ time.day }}</td>
-                    <td>{{ time.time }}</td>
-                    <td>{{ formatNumber(time.avgViews) }}</td>
-                    <td>
-                      <v-chip color="success" text-color="white" size="small">{{ time.engagementRate.toFixed(2) }}%</v-chip>
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- Geographic Performance Panel -->
-          <v-expansion-panel>
-            <v-expansion-panel-title>Geographic Performance</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-table>
-                <thead>
-                  <tr>
-                    <th>Country</th>
-                    <th>Followers</th>
-                    <th>Views</th>
-                    <th>Engagement Rate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="geo in metrics.geographicPerformance" :key="geo.country">
-                    <td>{{ geo.country }}</td>
-                    <td>{{ formatNumber(geo.followers) }}</td>
-                    <td>{{ formatNumber(geo.views) }}</td>
-                    <td>
-                      <v-chip color="info" text-color="white" size="small">{{ geo.engagementRate.toFixed(2) }}%</v-chip>
-                    </td>
-                  </tr>
-                </tbody>
-              </v-table>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- Churn Analysis Panel -->
-          <v-expansion-panel>
-            <v-expansion-panel-title>Churn Analysis</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-row>
-                <v-col cols="12">
-                  <canvas id="churnChart" height="100"></canvas>
-                </v-col>
-              </v-row>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, Filler } from 'chart.js'
-import metrics from '../data/metrics.json'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, DoughnutController, Filler } from 'chart.js'
+import metricsData from '../data/metrics.json'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, DoughnutController, Filler)
 
+const selectedYear = ref(2026)
 const selectedDateRange = ref('all')
 const selectedPlatforms = ref(['YouTube', 'TikTok', 'Instagram'])
 const selectedContentType = ref('all')
+
+const yearOptions = [2024, 2025, 2026]
 
 const dateRangeOptions = [
   { title: 'Last 7 Days', value: '7' },
@@ -336,6 +291,12 @@ const topContentHeaders = [
   { title: 'Likes', key: 'likes', width: '10%' }
 ]
 
+const metrics = ref(metricsData.overview)
+const monthlyData = ref(metricsData.monthlyData.filter(m => m.year === selectedYear.value))
+const topContent = ref(metricsData.topContent)
+const platformPerformance = metricsData.platformPerformance
+const contentTypePerformance = metricsData.contentTypePerformance
+
 const formatNumber = (num: number): string => {
   if (num >= 1000000) {
     return (num / 1000000).toFixed(1) + 'M'
@@ -347,237 +308,208 @@ const formatNumber = (num: number): string => {
 }
 
 const applyFilters = () => {
-  console.log('Filters applied:', { selectedDateRange: selectedDateRange.value, selectedPlatforms: selectedPlatforms.value, selectedContentType: selectedContentType.value })
+  monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
+  
+  if (selectedContentType.value !== 'all') {
+    topContent.value = metricsData.topContent.filter(c => c.type === selectedContentType.value)
+  } else {
+    topContent.value = metricsData.topContent
+  }
+  
+  if (selectedPlatforms.value.length > 0) {
+    topContent.value = topContent.value.filter(c => selectedPlatforms.value.includes(c.platform))
+  }
+  
+  console.log('Filters applied:', { year: selectedYear.value, dateRange: selectedDateRange.value, platforms: selectedPlatforms.value, contentType: selectedContentType.value })
+  
+  // Redraw charts
+  setTimeout(() => {
+    drawCharts()
+  }, 100)
+}
+
+const resetFilters = () => {
+  selectedYear.value = 2026
+  selectedDateRange.value = 'all'
+  selectedPlatforms.value = ['YouTube', 'TikTok', 'Instagram']
+  selectedContentType.value = 'all'
+  applyFilters()
 }
 
 const refreshData = () => {
   console.log('Refreshing data...')
+  applyFilters()
 }
 
 const exportData = () => {
   console.log('Exporting data...')
 }
 
-onMounted(() => {
+let charts: any = {}
+
+const drawCharts = () => {
+  // Destroy existing charts
+  Object.values(charts).forEach((chart: any) => {
+    if (chart) chart.destroy()
+  })
+  charts = {}
+
+  const monthLabels = monthlyData.value.map(m => m.month)
+  
   // Views Trend Chart
   const viewsCtx = document.getElementById('viewsChart') as HTMLCanvasElement
-  new ChartJS(viewsCtx, {
-    type: 'line',
-    data: {
-      labels: metrics.monthlyData.map(m => m.month.split(' ')[0]),
-      datasets: [
-        {
-          label: 'Views',
-          data: metrics.monthlyData.map(m => m.views),
-          borderColor: '#3f51b5',
-          backgroundColor: 'rgba(63, 81, 181, 0.1)',
-          tension: 0.4,
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (viewsCtx) {
+    charts['viewsChart'] = new ChartJS(viewsCtx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [
+          {
+            label: 'Views',
+            data: monthlyData.value.map(m => m.views),
+            borderColor: '#3f51b5',
+            backgroundColor: 'rgba(63, 81, 181, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
 
   // Subscriber Growth Chart
   const subscriberCtx = document.getElementById('subscriberChart') as HTMLCanvasElement
-  new ChartJS(subscriberCtx, {
-    type: 'line',
-    data: {
-      labels: metrics.monthlyData.map(m => m.month.split(' ')[0]),
-      datasets: [
-        {
-          label: 'Followers',
-          data: metrics.monthlyData.map(m => m.followers),
-          borderColor: '#4CAF50',
-          backgroundColor: 'rgba(76, 175, 80, 0.1)',
-          tension: 0.4,
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (subscriberCtx) {
+    charts['subscriberChart'] = new ChartJS(subscriberCtx, {
+      type: 'line',
+      data: {
+        labels: monthLabels,
+        datasets: [
+          {
+            label: 'Followers',
+            data: monthlyData.value.map(m => m.followers),
+            borderColor: '#4CAF50',
+            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
 
   // Revenue Trend Chart
   const revenueCtx = document.getElementById('revenueChart') as HTMLCanvasElement
-  new ChartJS(revenueCtx, {
-    type: 'bar',
-    data: {
-      labels: metrics.monthlyData.map(m => m.month.split(' ')[0]),
-      datasets: [
-        {
-          label: 'Ad Revenue',
-          data: metrics.monthlyData.map(m => m.adRevenue),
-          backgroundColor: '#FF9800'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (revenueCtx) {
+    charts['revenueChart'] = new ChartJS(revenueCtx, {
+      type: 'bar',
+      data: {
+        labels: monthLabels,
+        datasets: [
+          {
+            label: 'Ad Revenue',
+            data: monthlyData.value.map(m => m.adRevenue),
+            backgroundColor: '#FF9800'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
 
   // Engagement Distribution Chart
   const engagementCtx = document.getElementById('engagementChart') as HTMLCanvasElement
-  const lastMonth = metrics.monthlyData[metrics.monthlyData.length - 1]
-  new ChartJS(engagementCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Likes', 'Comments', 'Shares'],
-      datasets: [
-        {
-          data: [lastMonth.likes, lastMonth.comments, lastMonth.shares],
-          backgroundColor: ['#3f51b5', '#FF9800', '#4CAF50']
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (engagementCtx && monthlyData.value.length > 0) {
+    const lastMonth = monthlyData.value[monthlyData.value.length - 1]
+    charts['engagementChart'] = new ChartJS(engagementCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Likes', 'Comments', 'Shares'],
+        datasets: [
+          {
+            data: [lastMonth.likes, lastMonth.comments, lastMonth.shares],
+            backgroundColor: ['#3f51b5', '#FF9800', '#4CAF50']
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
 
   // Content Type Chart
   const contentTypeCtx = document.getElementById('contentTypeChart') as HTMLCanvasElement
-  new ChartJS(contentTypeCtx, {
-    type: 'bar',
-    data: {
-      labels: metrics.contentTypePerformance.map(ct => ct.type),
-      datasets: [
-        {
-          label: 'Views',
-          data: metrics.contentTypePerformance.map(ct => ct.views / 1000000),
-          backgroundColor: '#2196F3'
-        }
-      ]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (contentTypeCtx) {
+    charts['contentTypeChart'] = new ChartJS(contentTypeCtx, {
+      type: 'bar',
+      data: {
+        labels: contentTypePerformance.map(ct => ct.type),
+        datasets: [
+          {
+            label: 'Views',
+            data: contentTypePerformance.map(ct => ct.views / 1000000),
+            backgroundColor: '#2196F3'
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
 
   // Platform Chart
   const platformCtx = document.getElementById('platformChart') as HTMLCanvasElement
-  new ChartJS(platformCtx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(metrics.platformPerformance),
-      datasets: [
-        {
-          label: 'Followers',
-          data: Object.values(metrics.platformPerformance).map(p => p.followers),
-          backgroundColor: '#3f51b5'
-        },
-        {
-          label: 'Engagement %',
-          data: Object.values(metrics.platformPerformance).map(p => p.engagement),
-          backgroundColor: '#4CAF50'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
+  if (platformCtx) {
+    charts['platformChart'] = new ChartJS(platformCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(platformPerformance),
+        datasets: [
+          {
+            label: 'Followers',
+            data: Object.values(platformPerformance).map(p => p.followers),
+            backgroundColor: '#3f51b5'
+          },
+          {
+            label: 'Engagement %',
+            data: Object.values(platformPerformance).map(p => p.engagement),
+            backgroundColor: '#4CAF50'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: true } }
       }
-    }
-  })
+    })
+  }
+}
 
-  // Age Distribution Chart
-  const ageCtx = document.getElementById('ageChart') as HTMLCanvasElement
-  new ChartJS(ageCtx, {
-    type: 'pie',
-    data: {
-      labels: metrics.demographicsBreakdown.ageGroups.map(ag => ag.range),
-      datasets: [
-        {
-          data: metrics.demographicsBreakdown.ageGroups.map(ag => ag.percentage),
-          backgroundColor: ['#3f51b5', '#2196F3', '#4CAF50', '#FF9800', '#F44336', '#9C27B0']
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
-      }
-    }
-  })
-
-  // Gender Distribution Chart
-  const genderCtx = document.getElementById('genderChart') as HTMLCanvasElement
-  new ChartJS(genderCtx, {
-    type: 'doughnut',
-    data: {
-      labels: metrics.demographicsBreakdown.gender.map(g => g.gender),
-      datasets: [
-        {
-          data: metrics.demographicsBreakdown.gender.map(g => g.percentage),
-          backgroundColor: ['#FF9800', '#2196F3', '#9C27B0']
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
-      }
-    }
-  })
-
-  // Churn Rate Chart
-  const churnCtx = document.getElementById('churnChart') as HTMLCanvasElement
-  new ChartJS(churnCtx, {
-    type: 'line',
-    data: {
-      labels: metrics.monthlyData.map(m => m.month.split(' ')[0]),
-      datasets: [
-        {
-          label: 'Churn Rate %',
-          data: metrics.monthlyData.map(m => m.churnRate * 100),
-          borderColor: '#F44336',
-          backgroundColor: 'rgba(244, 67, 54, 0.1)',
-          tension: 0.4,
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      plugins: {
-        legend: { display: true }
-      }
-    }
-  })
+onMounted(() => {
+  monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
+  drawCharts()
 })
 </script>
 
