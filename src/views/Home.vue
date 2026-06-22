@@ -158,7 +158,7 @@
     <!-- Charts Row 2 -->
     <v-row class="mb-6" align="stretch">
       <v-col cols="12" md="6">
-        <v-card elevation="1" class="chart-card">
+        <v-card elevation="1" class="chart-card chart-card-fixed">
           <v-card-title class="chart-card-title">Revenue Trend</v-card-title>
           <v-card-text class="chart-card-text">
             <div class="chart-panel chart-panel-line">
@@ -168,7 +168,7 @@
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
-        <v-card elevation="1" class="chart-card">
+        <v-card elevation="1" class="chart-card chart-card-fixed">
           <v-card-title class="chart-card-title">Subscriber Churn</v-card-title>
           <v-card-text class="chart-card-text">
             <div class="chart-panel chart-panel-line">
@@ -182,9 +182,9 @@
     <!-- Charts Row 3 -->
     <v-row class="mb-6" align="stretch">
       <v-col cols="12" md="6">
-        <v-card elevation="1" style="height: 280px;">
+        <v-card elevation="1" class="chart-card chart-card-fixed">
           <v-card-title class="chart-card-title">Engagement Breakdown</v-card-title>
-          <v-card-text class="donut-card-text">
+          <v-card-text class="chart-card-text donut-card-text">
             <div class="chart-panel chart-panel-donut">
               <canvas id="engagementChart" height="100"></canvas>
             </div>
@@ -193,9 +193,9 @@
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card elevation="1" class="content-type-card">
+        <v-card elevation="1" class="chart-card chart-card-fixed">
           <v-card-title class="chart-card-title">Content Performance by Type</v-card-title>
-          <v-card-text class="content-type-card-text">
+          <v-card-text class="chart-card-text content-type-card-text">
             <div class="chart-panel chart-panel-bar">
               <canvas id="contentTypeChart"></canvas>
             </div>
@@ -439,7 +439,7 @@ const drawCharts = () => {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -490,7 +490,7 @@ const drawCharts = () => {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -674,10 +674,18 @@ onBeforeUnmount(() => {
 
 .chart-card {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card-fixed {
+  height: 320px;
 }
 
 .chart-card-text {
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .chart-panel {
@@ -687,11 +695,16 @@ onBeforeUnmount(() => {
 
 .chart-panel-line {
   width: 100%;
+  height: 220px;
 }
 
 .chart-panel-line canvas,
 .chart-panel-bar canvas {
   width: 100% !important;
+}
+
+.chart-panel-line canvas {
+  height: 220px !important;
 }
 
 .chart-panel-donut {
@@ -708,22 +721,15 @@ onBeforeUnmount(() => {
 }
 
 .chart-panel-bar {
-  height: 100%;
+  height: 220px;
 }
 
 .chart-panel-bar canvas {
-  height: 100% !important;
-}
-
-.content-type-card {
-  height: 280px;
-  display: flex;
-  flex-direction: column;
+  height: 220px !important;
 }
 
 .content-type-card-text {
-  flex: 1;
-  min-height: 0;
+  padding-top: 8px;
 }
 
 :deep(.filter-row .v-col) {
