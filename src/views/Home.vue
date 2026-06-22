@@ -5,8 +5,8 @@
       <v-col cols="12">
         <div class="d-flex align-center justify-space-between">
           <div>
-            <h1 class="text-h6 font-weight-bold">Content Analytics Dashboard</h1>
-            <p class="text-caption text-grey mt-1">Monitor your content performance across all platforms</p>
+            <h1 class="text-h6 font-weight-bold">TikTok Analytics</h1>
+            <p class="text-caption text-grey mt-1">Real-time performance & insights for your TikTok channel</p>
           </div>
           <div class="d-flex gap-2">
             <v-btn @click="refreshData" icon size="small">
@@ -44,19 +44,7 @@
           @update:modelValue="applyFilters"
         ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="2">
-        <v-select 
-          v-model="selectedPlatforms" 
-          :items="platformOptions" 
-          item-title="title"
-          item-value="value"
-          label="Platforms" 
-          variant="outlined" 
-          multiple 
-          density="compact"
-          @update:modelValue="applyFilters"
-        ></v-select>
-      </v-col>
+
       <v-col cols="12" sm="6" md="2">
         <v-select 
           v-model="selectedContentType" 
@@ -80,76 +68,76 @@
     <!-- KPI Cards Row -->
     <v-row class="mb-6" style="flex-wrap: nowrap;">
       <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1">
+        <v-card elevation="1" class="gradient-card gradient-purple" style="border-radius: 12px; color: white;">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
-                <p class="text-subtitle2 text-grey">Total Views</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.totalViews) }}</p>
+                <p class="text-subtitle2" style="opacity: 0.9;">Total Views</p>
+                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.totalViews) }}</p>
               </div>
-              <v-icon size="32" color="primary">mdi-eye</v-icon>
+              <v-icon size="32" color="white">mdi-eye</v-icon>
             </div>
-            <v-progress-linear :value="85" color="primary" class="mt-2" height="4"></v-progress-linear>
+            <v-progress-linear :value="85" color="rgba(255,255,255,0.3)" class="mt-2" height="4"></v-progress-linear>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1">
+        <v-card elevation="1" class="gradient-card gradient-teal" style="border-radius: 12px; color: white;">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
-                <p class="text-subtitle2 text-grey">Followers</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.totalFollowers) }}</p>
+                <p class="text-subtitle2" style="opacity: 0.9;">Followers</p>
+                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.totalFollowers) }}</p>
               </div>
-              <v-icon size="32" color="primary">mdi-account-multiple</v-icon>
+              <v-icon size="32" color="white">mdi-account-multiple</v-icon>
             </div>
-            <v-chip size="small" color="success" text-color="white" class="mt-2">+2.3% MoM</v-chip>
+            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+2.3% MoM</v-chip>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1">
+        <v-card elevation="1" class="gradient-card gradient-orange" style="border-radius: 12px; color: white;">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
-                <p class="text-subtitle2 text-grey">Engagement Rate</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ metrics.totalEngagementRate.toFixed(2) }}%</p>
+                <p class="text-subtitle2" style="opacity: 0.9;">Engagement Rate</p>
+                <p class="text-h5 font-weight-bold">{{ metrics.totalEngagementRate.toFixed(2) }}%</p>
               </div>
-              <v-icon size="32" color="primary">mdi-heart</v-icon>
+              <v-icon size="32" color="white">mdi-heart</v-icon>
             </div>
-            <v-chip size="small" color="success" text-color="white" class="mt-2">+0.45% MoM</v-chip>
+            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+0.45% MoM</v-chip>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1">
+        <v-card elevation="1" class="gradient-card gradient-coral" style="border-radius: 12px; color: white;">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
-                <p class="text-subtitle2 text-grey">Ad Revenue</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">${{ formatNumber(metrics.totalAdRevenue) }}</p>
+                <p class="text-subtitle2" style="opacity: 0.9;">Ad Revenue</p>
+                <p class="text-h5 font-weight-bold">${{ formatNumber(metrics.totalAdRevenue) }}</p>
               </div>
-              <v-icon size="32" color="success">mdi-chart-line</v-icon>
+              <v-icon size="32" color="white">mdi-chart-line</v-icon>
             </div>
-            <v-chip size="small" color="success" text-color="white" class="mt-2">+12.5% YoY</v-chip>
+            <v-chip size="small" color="rgba(255,255,255,0.3)" text-color="white" class="mt-2">+12.5% YoY</v-chip>
           </v-card-text>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="2.4" style="flex: 1; min-width: 0;">
-        <v-card elevation="1">
+        <v-card elevation="1" class="gradient-card gradient-cyan" style="border-radius: 12px; color: white;">
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <div>
-                <p class="text-subtitle2 text-grey">Watch Time</p>
-                <p class="text-h5 font-weight-bold" style="color: #3f51b5">{{ formatNumber(metrics.avgWatchTimeHours) }}h</p>
+                <p class="text-subtitle2" style="opacity: 0.9;">Watch Time</p>
+                <p class="text-h5 font-weight-bold">{{ formatNumber(metrics.avgWatchTimeHours) }}h</p>
               </div>
-              <v-icon size="32" color="info">mdi-clock</v-icon>
+              <v-icon size="32" color="white">mdi-clock</v-icon>
             </div>
-            <v-progress-linear :value="72" color="info" class="mt-2" height="4"></v-progress-linear>
+            <v-progress-linear :value="72" color="rgba(255,255,255,0.3)" class="mt-2" height="4"></v-progress-linear>
           </v-card-text>
         </v-card>
       </v-col>
@@ -254,7 +242,6 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarEleme
 
 const selectedYear = ref(2026)
 const selectedDateRange = ref('all')
-const selectedPlatforms = ref(['YouTube', 'TikTok', 'Instagram'])
 const selectedContentType = ref('all')
 
 const yearOptions = [2024, 2025, 2026]
@@ -264,13 +251,6 @@ const dateRangeOptions = [
   { title: 'Last 30 Days', value: '30' },
   { title: 'Last 90 Days', value: '90' },
   { title: 'All Time', value: 'all' }
-]
-
-const platformOptions = [
-  { title: 'YouTube', value: 'YouTube' },
-  { title: 'TikTok', value: 'TikTok' },
-  { title: 'Instagram', value: 'Instagram' },
-  { title: 'Twitter', value: 'Twitter' }
 ]
 
 const contentTypeOptions = [
@@ -293,7 +273,7 @@ const topContentHeaders = [
 
 const metrics = ref(metricsData.overview)
 const monthlyData = ref(metricsData.monthlyData.filter(m => m.year === selectedYear.value))
-const topContent = ref(metricsData.topContent)
+const topContent = ref(metricsData.topContent.filter(c => c.platform === 'TikTok'))
 const platformPerformance = metricsData.platformPerformance
 const contentTypePerformance = metricsData.contentTypePerformance
 
@@ -310,17 +290,14 @@ const formatNumber = (num: number): string => {
 const applyFilters = () => {
   monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
   
+  // Filter for TikTok content only
+  let filteredContent = metricsData.topContent.filter(c => c.platform === 'TikTok')
+  
   if (selectedContentType.value !== 'all') {
-    topContent.value = metricsData.topContent.filter(c => c.type === selectedContentType.value)
-  } else {
-    topContent.value = metricsData.topContent
+    filteredContent = filteredContent.filter(c => c.type === selectedContentType.value)
   }
   
-  if (selectedPlatforms.value.length > 0) {
-    topContent.value = topContent.value.filter(c => selectedPlatforms.value.includes(c.platform))
-  }
-  
-  console.log('Filters applied:', { year: selectedYear.value, dateRange: selectedDateRange.value, platforms: selectedPlatforms.value, contentType: selectedContentType.value })
+  topContent.value = filteredContent
   
   // Redraw charts
   setTimeout(() => {
@@ -331,7 +308,6 @@ const applyFilters = () => {
 const resetFilters = () => {
   selectedYear.value = 2026
   selectedDateRange.value = 'all'
-  selectedPlatforms.value = ['YouTube', 'TikTok', 'Instagram']
   selectedContentType.value = 'all'
   applyFilters()
 }
@@ -367,8 +343,8 @@ const drawCharts = () => {
           {
             label: 'Views',
             data: monthlyData.value.map(m => m.views),
-            borderColor: '#3f51b5',
-            backgroundColor: 'rgba(63, 81, 181, 0.1)',
+            borderColor: '#6B5BFF',
+            backgroundColor: 'rgba(107, 91, 255, 0.1)',
             tension: 0.4,
             fill: true
           }
@@ -393,8 +369,8 @@ const drawCharts = () => {
           {
             label: 'Followers',
             data: monthlyData.value.map(m => m.followers),
-            borderColor: '#4CAF50',
-            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+            borderColor: '#17D7A6',
+            backgroundColor: 'rgba(23, 215, 166, 0.1)',
             tension: 0.4,
             fill: true
           }
@@ -442,7 +418,7 @@ const drawCharts = () => {
         datasets: [
           {
             data: [lastMonth.likes, lastMonth.comments, lastMonth.shares],
-            backgroundColor: ['#3f51b5', '#FF9800', '#4CAF50']
+            backgroundColor: ['#6B5BFF', '#FF9800', '#17D7A6']
           }
         ]
       },
@@ -465,7 +441,7 @@ const drawCharts = () => {
           {
             label: 'Views',
             data: contentTypePerformance.map(ct => ct.views / 1000000),
-            backgroundColor: '#2196F3'
+            backgroundColor: '#00D4FF'
           }
         ]
       },
@@ -489,12 +465,12 @@ const drawCharts = () => {
           {
             label: 'Followers',
             data: Object.values(platformPerformance).map(p => p.followers),
-            backgroundColor: '#3f51b5'
+            backgroundColor: '#6B5BFF'
           },
           {
             label: 'Engagement %',
             data: Object.values(platformPerformance).map(p => p.engagement),
-            backgroundColor: '#4CAF50'
+            backgroundColor: '#17D7A6'
           }
         ]
       },

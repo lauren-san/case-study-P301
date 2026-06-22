@@ -299,3 +299,34 @@ code {
     border-right-color: var(--border);
   }
 }
+
+/* Gradient Card Styles */
+.gradient-card {
+  background-attachment: fixed;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gradient-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #6B5BFF 0%, #8B7BFF 100%);
+}
+
+.gradient-teal {
+  background: linear-gradient(135deg, #17D7A6 0%, #1EC5A6 100%);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, #FF6B54 0%, #FF8554 100%);
+}
+
+.gradient-coral {
+  background: linear-gradient(135deg, #FF6B54 0%, #FF9847 100%);
+}
+
+.gradient-cyan {
+  background: linear-gradient(135deg, #00D4FF 0%, #00E9FF 100%);
+}
