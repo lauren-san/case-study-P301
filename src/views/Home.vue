@@ -31,18 +31,6 @@
           @update:modelValue="applyFilters"
         ></v-select>
       </v-col>
-      <v-col cols="12" sm="6" md="2">
-        <v-select 
-          v-model="selectedDateRange" 
-          :items="dateRangeOptions" 
-          item-title="title"
-          item-value="value"
-          label="Date Range" 
-          variant="outlined" 
-          density="compact"
-          @update:modelValue="applyFilters"
-        ></v-select>
-      </v-col>
     </v-row>
 
     <!-- KPI Cards: 2-up on mobile, 3-up on desktop -->
@@ -60,7 +48,7 @@
               </div>
             </div>
             <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
-              <v-chip size="small" color="rgba(23,215,166,0.15)" style="color: #17D7A6;">+2.3% MoM</v-chip>
+              <v-chip size="small" color="rgba(23,215,166,0.15)" style="color: #17D7A6;">{{ percentageChanges.followers > 0 ? '+' : '' }}{{ percentageChanges.followers.toFixed(1) }}% YoY</v-chip>
             </div>
           </v-card-text>
         </v-card>
@@ -79,7 +67,7 @@
               </div>
             </div>
             <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
-              <v-chip size="small" color="rgba(255,165,0,0.15)" style="color: #FFA500;">+0.45% MoM</v-chip>
+              <v-chip size="small" color="rgba(255,165,0,0.15)" style="color: #FFA500;">{{ percentageChanges.engagement > 0 ? '+' : '' }}{{ percentageChanges.engagement.toFixed(2) }}% YoY</v-chip>
             </div>
           </v-card-text>
         </v-card>
@@ -98,7 +86,7 @@
               </div>
             </div>
             <div class="d-flex justify-end mt-auto pt-2" style="width: 100%;">
-              <v-chip size="small" color="rgba(255,107,84,0.15)" style="color: #FF6B54;">+12.5% YoY</v-chip>
+              <v-chip size="small" color="rgba(255,107,84,0.15)" style="color: #FF6B54;">{{ percentageChanges.revenue > 0 ? '+' : '' }}{{ percentageChanges.revenue.toFixed(1) }}% YoY</v-chip>
             </div>
           </v-card-text>
         </v-card>
@@ -244,24 +232,16 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, DoughnutController, Filler } from 'chart.js'
 import metricsData from '../data/metrics.json'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, LineController, BarController, DoughnutController, Filler)
 
 const selectedYear = ref(2026)
-const selectedDateRange = ref('all')
 const selectedContentType = ref('all')
 
 const yearOptions = [2024, 2025, 2026]
-
-const dateRangeOptions = [
-  { title: 'Last 7 Days', value: '7' },
-  { title: 'Last 30 Days', value: '30' },
-  { title: 'Last 90 Days', value: '90' },
-  { title: 'All Time', value: 'all' }
-]
 
 const topContentHeaders = [
   { title: 'Title', key: 'title', width: '30%', align: 'start' as const },
@@ -273,14 +253,18 @@ const topContentHeaders = [
 ]
 
 const metrics = ref(metricsData.overview)
-const totalLikes = metricsData.monthlyData.reduce((sum: number, m: any) => sum + (m.likes || 0), 0)
+const totalLikes = ref(0)
 const monthlyData = ref(metricsData.monthlyData.filter(m => m.year === selectedYear.value))
 const topContent = ref(
   metricsData.topContent
+    .filter(c => c.platform === 'TikTok' && new Date(c.date).getFullYear() === selectedYear.value)
     .sort((left, right) => right.views - left.views)
     .slice(0, 10)
 )
 const contentTypePerformance = metricsData.contentTypePerformance
+const yearMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const firstHalfMonths = ['January', 'February', 'March', 'April', 'May', 'June']
+type MonthlyMetricKey = 'views' | 'followers' | 'adRevenue' | 'churnRate'
 
 const formatNumber = (num: number): string => {
   if (num >= 1000000) {
@@ -292,10 +276,81 @@ const formatNumber = (num: number): string => {
   return num.toFixed(0)
 }
 
-const applyFilters = () => {
-  monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
+const buildOverviewFromMonthlyData = (filteredMonthlyData: any[]) => {
+  if (!filteredMonthlyData.length) {
+    return {
+      ...metricsData.overview,
+      totalFollowers: 0,
+      totalViews: 0,
+      totalEngagementRate: 0,
+      totalAdRevenue: 0,
+      avgWatchTimeHours: 0
+    }
+  }
+
+  const lastMonth = filteredMonthlyData[filteredMonthlyData.length - 1]
+  const totalViews = filteredMonthlyData.reduce((sum: number, month: any) => sum + (month.views || 0), 0)
+  const totalAdRevenue = filteredMonthlyData.reduce((sum: number, month: any) => sum + (month.adRevenue || 0), 0)
+  const totalWatchTime = filteredMonthlyData.reduce((sum: number, month: any) => sum + (month.watchTimeHours || 0), 0)
+  const avgEngagementRate = filteredMonthlyData.reduce((sum: number, month: any) => sum + (month.engagementRate || 0), 0) / filteredMonthlyData.length
+
+  return {
+    ...metricsData.overview,
+    totalFollowers: lastMonth.followers || 0,
+    totalViews,
+    totalEngagementRate: avgEngagementRate,
+    totalAdRevenue,
+    avgWatchTimeHours: totalWatchTime
+  }
+}
+
+const calculatePercentageChange = (currentYear: number) => {
+  const previousYear = currentYear - 1
   
-  let filteredContent = [...metricsData.topContent]
+  // Get previous year data
+  const previousYearData = metricsData.monthlyData.filter(m => m.year === previousYear)
+  const previousMetrics = buildOverviewFromMonthlyData(previousYearData)
+  
+  // Current year is already in metrics.value
+  const currentMetrics = metrics.value
+  
+  // Calculate percentage changes
+  const followerChange = previousMetrics.totalFollowers > 0 
+    ? ((currentMetrics.totalFollowers - previousMetrics.totalFollowers) / previousMetrics.totalFollowers) * 100 
+    : 0
+  
+  const engagementChange = previousMetrics.totalEngagementRate > 0
+    ? ((currentMetrics.totalEngagementRate - previousMetrics.totalEngagementRate) / previousMetrics.totalEngagementRate) * 100
+    : 0
+  
+  const revenueChange = previousMetrics.totalAdRevenue > 0
+    ? ((currentMetrics.totalAdRevenue - previousMetrics.totalAdRevenue) / previousMetrics.totalAdRevenue) * 100
+    : 0
+  
+  return {
+    followers: followerChange,
+    engagement: engagementChange,
+    revenue: revenueChange
+  }
+}
+
+const percentageChanges = ref({ followers: 0, engagement: 0, revenue: 0 })
+
+const applyFilters = () => {
+  const yearData = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
+  monthlyData.value = yearData
+  metrics.value = buildOverviewFromMonthlyData(monthlyData.value)
+  totalLikes.value = monthlyData.value.reduce((sum: number, month: any) => sum + (month.likes || 0), 0)
+  
+  // Calculate percentage changes
+  if (selectedYear.value === 2024) {
+    // Sample data for 2024 since there's no previous year
+    percentageChanges.value = { followers: 8.5, engagement: 3.2, revenue: 15.8 }
+  } else {
+    percentageChanges.value = calculatePercentageChange(selectedYear.value)
+  }
+  
+  let filteredContent = [...metricsData.topContent].filter(c => c.platform === 'TikTok' && new Date(c.date).getFullYear() === selectedYear.value)
   
   if (selectedContentType.value !== 'all') {
     filteredContent = filteredContent.filter(c => c.type === selectedContentType.value)
@@ -305,10 +360,10 @@ const applyFilters = () => {
     .sort((left, right) => right.views - left.views)
     .slice(0, 10)
   
-  // Redraw charts
-  setTimeout(() => {
+  // Redraw charts after reactive data updates are flushed.
+  nextTick(() => {
     drawCharts()
-  }, 100)
+  })
 }
 
 const refreshData = () => {
@@ -341,7 +396,13 @@ const drawCharts = () => {
   charts = {}
   const palette = getChartPalette()
 
-  const monthLabels = monthlyData.value.map(m => m.month)
+  const monthLabels = selectedYear.value === 2026 ? [...firstHalfMonths] : [...yearMonths]
+  const getMonthlySeries = (metricKey: MonthlyMetricKey) => {
+    return monthLabels.map((monthLabel) => {
+      const monthEntry = monthlyData.value.find((month) => month.month === monthLabel)
+      return monthEntry ? monthEntry[metricKey] : null
+    })
+  }
   
   // Views Trend Chart
   const viewsCtx = document.getElementById('viewsChart') as HTMLCanvasElement
@@ -353,7 +414,7 @@ const drawCharts = () => {
         datasets: [
           {
             label: 'Views',
-            data: monthlyData.value.map(m => m.views),
+            data: getMonthlySeries('views'),
             borderColor: '#6B5BFF',
             backgroundColor: 'rgba(107, 91, 255, 0.1)',
             tension: 0.4,
@@ -389,7 +450,7 @@ const drawCharts = () => {
         datasets: [
           {
             label: 'Followers',
-            data: monthlyData.value.map(m => m.followers),
+            data: getMonthlySeries('followers'),
             borderColor: '#17D7A6',
             backgroundColor: 'rgba(23, 215, 166, 0.1)',
             tension: 0.4,
@@ -425,7 +486,7 @@ const drawCharts = () => {
         datasets: [
           {
             label: 'Ad Revenue',
-            data: monthlyData.value.map(m => m.adRevenue),
+            data: getMonthlySeries('adRevenue'),
             backgroundColor: '#FF9800',
             borderRadius: 8,
             borderSkipped: false,
@@ -473,7 +534,7 @@ const drawCharts = () => {
         datasets: [
           {
             label: 'Churn Rate',
-            data: monthlyData.value.map(m => m.churnRate),
+            data: getMonthlySeries('churnRate'),
             borderColor: '#EF5350',
             backgroundColor: 'rgba(239, 83, 80, 0.14)',
             pointBackgroundColor: '#EF5350',
@@ -617,8 +678,7 @@ const handleThemeChange = () => {
 }
 
 onMounted(() => {
-  monthlyData.value = metricsData.monthlyData.filter(m => m.year === selectedYear.value)
-  drawCharts()
+  applyFilters()
   window.addEventListener('app-theme-change', handleThemeChange)
 })
 
