@@ -372,7 +372,37 @@ const refreshData = () => {
 }
 
 const exportData = () => {
-  console.log('Exporting data...')
+  // Prepare CSV data
+  let csvContent = 'TikTok Analytics Report\n'
+  csvContent += `Year: ${selectedYear.value}\n\n`
+  
+  // Add metrics section
+  csvContent += 'KPI Metrics\n'
+  csvContent += 'Metric,Value\n'
+  csvContent += `Total Followers,${metrics.value.totalFollowers}\n`
+  csvContent += `Total Views,${metrics.value.totalViews}\n`
+  csvContent += `Engagement Rate,${metrics.value.totalEngagementRate.toFixed(2)}%\n`
+  csvContent += `Ad Revenue,$${metrics.value.totalAdRevenue.toFixed(2)}\n`
+  csvContent += `Total Watch Time,${metrics.value.avgWatchTimeHours}h\n`
+  csvContent += `Total Likes,${totalLikes.value}\n\n`
+  
+  // Add top content section
+  csvContent += 'Top 10 Performing Content\n'
+  csvContent += 'Title,Views,Engagement Rate,Likes,Date\n'
+  topContent.value.forEach((content: any) => {
+    csvContent += `"${content.title}",${content.views},${content.engagementRate}%,${content.likes},${content.date}\n`
+  })
+  
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: 'text/csv' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `tiktok-analytics-${selectedYear.value}.csv`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
 }
 
 let charts: any = {}
