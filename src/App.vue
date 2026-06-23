@@ -1,7 +1,8 @@
 <template>
   <v-app class="app-shell">
-    <v-app-bar app color="primary">
-      <v-app-bar-title class="dashboard-title">Social Media Dashboard</v-app-bar-title>
+    <v-app-bar app color="primary" class="d-flex align-center">
+      <v-icon color="white" class="ml-4 mr-3">mdi-comment</v-icon>
+      <span class="dashboard-title font-weight-bold text-white">Social Media Dashboard</span>
       <v-spacer></v-spacer>
       <v-btn
         icon
